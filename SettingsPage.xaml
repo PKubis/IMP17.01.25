@@ -1,0 +1,42 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:IMP.ViewModels"
+             x:Class="IMP.SettingsPage"
+             BackgroundImageSource="tlo1.jpg"
+             Title="Ustawienia">
+
+    <StackLayout Padding="20">
+        <!-- Ręczne sterowanie sekcjami -->
+        <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center">
+            <Label Text="Ręczne sterowanie sekcjami" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToSectionsControlCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+        <!-- Zmiana hasła -->
+        <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center">
+            <Label Text="Zmień hasło" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding ChangePasswordCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+        <!-- Usunięcie konta -->
+        <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center">
+            <Label Text="Usuń konto" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding DeleteAccountCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+        <!-- Przycisk Wyloguj -->
+        <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center" VerticalOptions="Center">
+            <Label Text="Wyloguj" FontSize="20" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding LogoutCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+    </StackLayout>
+</ContentPage>

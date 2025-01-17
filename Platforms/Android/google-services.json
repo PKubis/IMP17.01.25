@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "271933359348",
+    "firebase_url": "https://impdb-557fa-default-rtdb.europe-west1.firebasedatabase.app",
+    "project_id": "impdb-557fa",
+    "storage_bucket": "impdb-557fa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:271933359348:android:4a107fc00186b01b124aa1",
+        "android_client_info": {
+          "package_name": "com.companyname.imp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAhwx1KoJUOHUqVih6tvHpuNFQaOui4HoQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,80 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IMP.LoginPage"
+             BackgroundImageSource="tlo1.jpg">
+
+    <StackLayout HorizontalOptions="Center" VerticalOptions="CenterAndExpand" Spacing="20">
+
+        <!-- Pierwsza ramka z formularzem logowania -->
+        <Frame BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
+               HorizontalOptions="Center" WidthRequest="500" HeightRequest="550">
+
+            <!-- Układ wewnątrz głównej ramki -->
+            <StackLayout Spacing="20" HorizontalOptions="Center" VerticalOptions="CenterAndExpand">
+
+                <!-- Nagłówek powitalny -->
+                <Label Text="Witaj ponownie!" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" TextColor="Black" />
+
+                <!-- Pole na Email -->
+                <Frame BackgroundColor="White" CornerRadius="25" Padding="5" HasShadow="False">
+                    <Entry x:Name="UserNameEntry" Placeholder="email" Keyboard="Email"
+                           Text="{Binding UserName}"
+                           TextColor="Black"
+                           PlaceholderColor="Grey"
+                           BackgroundColor="Transparent"
+                           WidthRequest="350" HeightRequest="60" HorizontalOptions="Center"/>
+                </Frame>
+
+                <!-- Pole na Hasło z ikoną oka -->
+                <Frame BackgroundColor="White" CornerRadius="25" Padding="5" HasShadow="False">
+                    <Grid>
+                        <Entry x:Name="PasswordEntry" Placeholder="hasło" IsPassword="True"
+                               Text="{Binding UserPassword}"
+                               TextColor="Black"
+                               PlaceholderColor="Grey" 
+                               BackgroundColor="Transparent"
+                               WidthRequest="350" HeightRequest="60" HorizontalOptions="Center"/>
+                        <ImageButton Source="eye.png" WidthRequest="30" HeightRequest="30" Aspect="AspectFit"
+                                     HorizontalOptions="End" VerticalOptions="Center" Margin="5,0"
+                                     Clicked="OnTogglePasswordVisibilityClicked"/>
+                    </Grid>
+                </Frame>
+
+                <!-- Przycisk Zaloguj -->
+                <Button Text="zaloguj"
+                        BackgroundColor="#0096D6" TextColor="White"
+                        CornerRadius="30" WidthRequest="200" HeightRequest="60"
+                        HorizontalOptions="Center"
+                        Command="{Binding LoginBtn}" />
+
+                <!-- Link do resetowania hasła -->
+                <Label Text="nie pamiętasz hasła?" TextColor="Black" FontAttributes="Bold" TextDecorations="Underline" HorizontalOptions="Center"/>
+            </StackLayout>
+        </Frame>
+
+        <!-- Druga ramka z linkiem do rejestracji -->
+        <Frame BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="10" HasShadow="False" BorderColor="Transparent"
+               HorizontalOptions="Center" WidthRequest="500" HeightRequest="80">
+            <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+
+                <!-- Tekst z wyróżnieniem "kliknij tutaj" -->
+                <Label HorizontalOptions="Center" TextColor="Black">
+                    <Label.FormattedText>
+                        <FormattedString>
+                            <Span Text="albo " TextColor="Black" />
+                            <Span Text="kliknij tutaj"
+                                  FontAttributes="Bold"
+                                  TextDecorations="Underline"
+                                  TextColor="Black">
+                                <Span.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnRegisterTapped" />
+                                </Span.GestureRecognizers>
+                            </Span>
+                            <Span Text=", aby założyć konto" TextColor="Black" />
+                        </FormattedString>
+                    </Label.FormattedText>
+                </Label>
+            </StackLayout>
+        </Frame>
+    </StackLayout>
+</ContentPage>

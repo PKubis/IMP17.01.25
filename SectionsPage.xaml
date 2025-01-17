@@ -1,0 +1,100 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:IMP.ViewModels"
+             x:Class="IMP.SectionsPage"
+             BackgroundImageSource="tlo1.jpg"
+             Title="Sekcje">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="10">
+            <!-- Nagłówek -->
+            <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center">
+                <Label Text="Dodaj nową sekcję" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       TextColor="Black" />
+            </Frame>
+
+            <!-- Wybór rury -->
+            <Label Text="Wybierz rodzaj rury:" FontSize="Medium" HorizontalOptions="Center" />
+            <Picker Title="Wybierz rurę" 
+                    ItemsSource="{Binding AvailablePipes}" 
+                    SelectedItem="{Binding SelectedPipe}" />
+
+            <!-- Pola do dodawania sekcji -->
+            <Frame BackgroundColor="#B3FFFFFF" CornerRadius="15" Padding="10">
+                <Entry Placeholder="Nazwa sekcji" Text="{Binding SectionName}" />
+            </Frame>
+            <Frame BackgroundColor="#B3FFFFFF" CornerRadius="15" Padding="10">
+                <Entry Placeholder="Czas rozpoczęcia (HH:mm)" Text="{Binding StartTime}" Keyboard="Numeric" />
+            </Frame>
+            <Frame BackgroundColor="#B3FFFFFF" CornerRadius="15" Padding="10">
+                <Entry Placeholder="Czas trwania (minuty)" Text="{Binding Duration}" Keyboard="Numeric" />
+            </Frame>
+
+            <!-- Wybór dni tygodnia -->
+            <Label Text="Wybierz dni tygodnia:" FontSize="Medium" HorizontalOptions="Center" />
+            <Grid ColumnDefinitions="*,*,*,*,*,*,*">
+                <Button Text="Pn" Command="{Binding ToggleDayCommand}" CommandParameter="pn" BackgroundColor="{Binding DayColors[pn]}" Grid.Column="0" />
+                <Button Text="Wt" Command="{Binding ToggleDayCommand}" CommandParameter="wt" BackgroundColor="{Binding DayColors[wt]}" Grid.Column="1" />
+                <Button Text="Śr" Command="{Binding ToggleDayCommand}" CommandParameter="śr" BackgroundColor="{Binding DayColors[śr]}" Grid.Column="2" />
+                <Button Text="Cz" Command="{Binding ToggleDayCommand}" CommandParameter="cz" BackgroundColor="{Binding DayColors[cz]}" Grid.Column="3" />
+                <Button Text="Pt" Command="{Binding ToggleDayCommand}" CommandParameter="pt" BackgroundColor="{Binding DayColors[pt]}" Grid.Column="4" />
+                <Button Text="Sb" Command="{Binding ToggleDayCommand}" CommandParameter="sb" BackgroundColor="{Binding DayColors[sb]}" Grid.Column="5" />
+                <Button Text="Nd" Command="{Binding ToggleDayCommand}" CommandParameter="nd" BackgroundColor="{Binding DayColors[nd]}" Grid.Column="6" />
+            </Grid>
+
+            <!-- Przycisk dodawania sekcji -->
+            <Button Text="Dodaj sekcję" Command="{Binding AddSectionCommand}" BackgroundColor="#4CAF50" TextColor="White" />
+
+            <!-- Lista sekcji -->
+            <Label Text="Twoje sekcje" FontSize="24" HorizontalOptions="Center" />
+            <CollectionView ItemsSource="{Binding Sections}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#B3FFFFFF" Padding="10" CornerRadius="15">
+                            <StackLayout Orientation="Horizontal" Spacing="10">
+                                <!-- Informacje o sekcji -->
+                                <StackLayout Spacing="5" VerticalOptions="CenterAndExpand">
+                                    <Label Text="{Binding Name}" FontAttributes="Bold" />
+                                    <Label Text="{Binding StartTime, StringFormat='Czas rozpoczęcia: {0}'}" />
+                                    <Label Text="{Binding Duration, StringFormat='Czas trwania: {0} min'}" />
+                                    <Label Text="{Binding SelectedDays, StringFormat='Dni: {0}'}" />
+                                    <Label Text="{Binding WateringType, StringFormat='Rodzaj rury: {0}'}" />
+                                    <Label Text="{Binding ElapsedTime, StringFormat='Czas: {0} sek'}" 
+           FontSize="Small" 
+           TextColor="Gray" />
+                                </StackLayout>
+                                <!-- Guziki Edytuj, Usuń i Stop -->
+                                <StackLayout Orientation="Horizontal" Spacing="5" VerticalOptions="Center">
+                                    <Button Text="Edytuj" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SectionsViewModel}}, Path=EditSectionCommand}" 
+                                            CommandParameter="{Binding Id}" 
+                                            BackgroundColor="Blue" 
+                                            TextColor="White" 
+                                            WidthRequest="80" 
+                                            HeightRequest="40" />
+
+                                    <Button Text="Usuń" 
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SectionsViewModel}}, Path=DeleteSectionCommand}" 
+                                            CommandParameter="{Binding Id}" 
+                                            BackgroundColor="Red" 
+                                            TextColor="White" 
+                                            WidthRequest="80" 
+                                            HeightRequest="40" />
+
+                                    <Button Text="Stop" 
+        Command="{Binding Source={RelativeSource AncestorType={x:Type viewModels:SectionsViewModel}}, Path=StopSectionCommand}" 
+        CommandParameter="{Binding Id}" 
+        BackgroundColor="Red" 
+        TextColor="White" />
+
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
