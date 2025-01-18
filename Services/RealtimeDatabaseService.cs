@@ -187,5 +187,20 @@ namespace IMP.Services
                 throw;
             }
         }
+        public async Task UpdateTotalWaterUsageAsync(string userId, string sectionId, double totalWaterUsage)
+        {
+            var url = $"{_databaseUrl}users/{userId}/sections/{sectionId}/TotalWaterUsageLiters.json";
+            var json = JsonSerializer.Serialize(totalWaterUsage);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PutAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to update TotalWaterUsage: {response.StatusCode}");
+            }
+        }
+
+
+
     }
 }

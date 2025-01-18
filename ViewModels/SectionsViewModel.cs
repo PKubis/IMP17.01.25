@@ -36,7 +36,7 @@ namespace IMP.ViewModels
             LoadSectionsAsync();
 
             // Timer do regularnego odświeżania danych
-            _refreshTimer = new System.Timers.Timer(1000); 
+            _refreshTimer = new System.Timers.Timer(1000);
             _refreshTimer.Elapsed += async (s, e) =>
             {
                 await LoadSectionsAsync();
@@ -122,10 +122,23 @@ namespace IMP.ViewModels
                 Sections.Clear();
                 foreach (var section in sections)
                 {
+                    // Oblicz bieżące zużycie w litrach i m³
+                    section.CurrentWaterUsage = CalculateWaterUsageLiters(section.WateringType, section.ElapsedTime);
+                    section.CurrentWaterUsageCubicMeters = CalculateWaterUsageCubicMeters(section.WateringType, section.ElapsedTime);
+
+                    // Całkowite zużycie w litrach i m³
+                    section.TotalWaterUsageLiters = CalculateWaterUsageLiters(section.WateringType, section.Duration * 60);
+                    section.TotalWaterUsageCubicMeters = section.TotalWaterUsageLiters / 1000;
+
                     Sections.Add(section);
                 }
             });
         }
+
+
+
+
+
 
         public void StopRefreshTimer()
         {
@@ -210,13 +223,32 @@ namespace IMP.ViewModels
         }
         private async Task StopSection(string sectionId)
         {
+
             var section = Sections.FirstOrDefault(s => s.Id == sectionId);
             if (section == null) return;
 
+            // Zatrzymanie sekcji
             section.Status = "stop";
+
+            // Oblicz całkowite zużycie na podstawie rzeczywistego czasu działania
+            section.TotalWaterUsageLiters += CalculateWaterUsageLiters(section.WateringType, section.ElapsedTime);
+            section.TotalWaterUsageCubicMeters = section.TotalWaterUsageLiters / 1000;
+
+            // Zapis do Firebase
             await _firebaseService.SaveSectionAsync(_userId, section);
-            OnPropertyChanged(nameof(Sections));
+            await _firebaseService.UpdateTotalWaterUsageAsync(_userId, section.Id, section.TotalWaterUsageLiters);
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                var index = Sections.IndexOf(section);
+                if (index >= 0)
+                {
+                    Sections[index] = section;
+                }
+            });
         }
+
+
         private async Task DeleteSection(string sectionId)
         {
             var section = Sections.FirstOrDefault(s => s.Id == sectionId);
@@ -228,5 +260,38 @@ namespace IMP.ViewModels
             await _firebaseService.DeleteSectionAsync(_userId, sectionId);
             Sections.Remove(section);
         }
+        private readonly Dictionary<string, double> _waterUsageRates = new()
+{
+    { "Rura 16mm", 600 },  // Litry na godzinę
+    { "Rura 25mm", 2500 }, // Litry na godzinę
+    { "Rura 32mm", 3300 }  // Litry na godzinę
+};
+
+        // Metoda do obliczania bieżącego zużycia w litrach
+        // Metoda obliczania bieżącego zużycia w litrach na podstawie czasu
+        private double CalculateWaterUsageLiters(string wateringType, int elapsedTimeInSeconds)
+        {
+            double waterFlowRate = wateringType switch
+            {
+                "Rura 16mm" => 600.0 / 3600, // Litry na sekundę
+                "Rura 25mm" => 2500.0 / 3600,
+                "Rura 32mm" => 3300.0 / 3600,
+                _ => 0.0
+            };
+
+            return waterFlowRate * elapsedTimeInSeconds; // Zużycie w litrach
+        }
+
+        // Metoda obliczania bieżącego zużycia w metrach sześciennych na podstawie czasu
+        private double CalculateWaterUsageCubicMeters(string wateringType, int elapsedTimeInSeconds)
+        {
+            return CalculateWaterUsageLiters(wateringType, elapsedTimeInSeconds) / 1000; // Zamiana litrów na m³
+        }
+
+
+
+
+
+
     }
 }
