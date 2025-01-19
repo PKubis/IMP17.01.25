@@ -44,6 +44,19 @@ namespace IMP
             }
         }
 
+        private double CalculateWaterUsageLiters(string wateringType, int elapsedTimeInSeconds)
+        {
+            double waterFlowRate = wateringType switch
+            {
+                "Rura 16mm" => 600.0 / 3600, // Litry na sekundę
+                "Rura 25mm" => 2500.0 / 3600,
+                "Rura 32mm" => 3300.0 / 3600,
+                _ => 0.0
+            };
+
+            return waterFlowRate * elapsedTimeInSeconds; // Zużycie w litrach
+        }
+
         private void StartTimer(string sectionId)
         {
             if (_timers.ContainsKey(sectionId))
@@ -55,13 +68,20 @@ namespace IMP
             var section = Sections.FirstOrDefault(sec => sec.Id == sectionId);
             if (section == null) return;
 
-            // Rozpoczęcie sterowania LED w Firebase
-            _ = _databaseService.UpdateSectionStatusAsync(_userId, section.Id, "start", section.WateringType);
+            // Rozpoczęcie sterowania LED
+            Task.Run(async () =>
+            {
+                await _databaseService.UpdateSectionStatusAsync(_userId, section.Id, "start", section.WateringType);
+            });
 
             var timer = new System.Timers.Timer(1000); // Timer co sekundę
             timer.Elapsed += async (s, e) =>
             {
                 section.ElapsedTime++;
+                section.CurrentWaterUsage = CalculateWaterUsageLiters(section.WateringType, section.ElapsedTime);
+                section.CurrentWaterUsageCubicMeters = section.CurrentWaterUsage / 1000;
+
+                // Aktualizacja danych sekcji w Firebase
                 await _databaseService.UpdateElapsedTimeAsync(_userId, section.Id, section.ElapsedTime);
 
                 Device.BeginInvokeOnMainThread(() =>
@@ -70,6 +90,7 @@ namespace IMP
                     Sections[Sections.IndexOf(updatedSection)] = section;
                 });
             };
+
             timer.Start();
             _timers[sectionId] = timer;
         }
@@ -90,6 +111,8 @@ namespace IMP
             await _databaseService.UpdateSectionStatusAsync(_userId, section.Id, "stop", section.WateringType);
 
             section.ElapsedTime = 0;
+            section.CurrentWaterUsage = 0;
+            section.CurrentWaterUsageCubicMeters = 0;
 
             Device.BeginInvokeOnMainThread(() =>
             {
@@ -97,7 +120,7 @@ namespace IMP
                 Sections[Sections.IndexOf(updatedSection)] = section;
             });
 
-            // Zapisz zresetowany czas do Firebase
+            // Zapis zresetowanego czasu do Firebase
             await _databaseService.UpdateElapsedTimeAsync(_userId, section.Id, section.ElapsedTime);
         }
     }
