@@ -29,6 +29,8 @@ namespace IMP.ViewModels
             EditSectionCommand = new Command<string>(async id => await EditSection(id));
             StopSectionCommand = new Command<string>(async id => await StopSection(id));
         }
+        public ObservableCollection<ScheduledHistoryEntry> ScheduledHistory { get; set; } = new ObservableCollection<ScheduledHistoryEntry>();
+        public ObservableCollection<ManualHistoryEntry> ManualHistory { get; set; } = new ObservableCollection<ManualHistoryEntry>();
 
         public SectionsViewModel(string userId) : this()
         {
@@ -134,6 +136,27 @@ namespace IMP.ViewModels
                 }
             });
         }
+        private async void LoadHistoryAsync()
+        {
+            var scheduledHistory = await _firebaseService.GetScheduledHistoryAsync(_userId);
+            var manualHistory = await _firebaseService.GetManualHistoryAsync(_userId);
+
+            Device.BeginInvokeOnMainThread(() =>
+            {
+                ScheduledHistory.Clear();
+                foreach (var entry in scheduledHistory)
+                {
+                    ScheduledHistory.Add(entry);
+                }
+
+                ManualHistory.Clear();
+                foreach (var entry in manualHistory)
+                {
+                    ManualHistory.Add(entry);
+                }
+            });
+        }
+
 
 
 
@@ -167,8 +190,15 @@ namespace IMP.ViewModels
                 Status = "stop"
             };
 
-            await _firebaseService.SaveSectionAsync(_userId, newSection);
-            Sections.Add(newSection);
+            // Dodaj sekcję do Firebase tylko wtedy, gdy nie istnieje
+            if (!Sections.Any(s => s.Id == newSection.Id))
+            {
+                await _firebaseService.SaveSectionAsync(_userId, newSection);
+                Device.BeginInvokeOnMainThread(() =>
+                {
+                    Sections.Add(newSection);
+                });
+            }
 
             SectionName = string.Empty;
             StartTime = string.Empty;
@@ -237,7 +267,21 @@ namespace IMP.ViewModels
             // Zapis do Firebase
             await _firebaseService.SaveSectionAsync(_userId, section);
             await _firebaseService.UpdateTotalWaterUsageAsync(_userId, section.Id, section.TotalWaterUsageLiters);
-
+            await _firebaseService.AddScheduledHistoryAsync(_userId, new ScheduledHistoryEntry
+            {
+                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                SectionName = section.Name,
+                WaterUsageLiters = section.TotalWaterUsageLiters,
+                WaterUsageCubicMeters = section.TotalWaterUsageCubicMeters
+            });
+             // Zapisanie historii do Firebase
+    await _firebaseService.AddScheduledHistoryAsync(_userId, new ScheduledHistoryEntry
+    {
+        Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+        SectionName = section.Name,
+        WaterUsageLiters = section.TotalWaterUsageLiters,
+        WaterUsageCubicMeters = section.TotalWaterUsageCubicMeters
+    });
             Device.BeginInvokeOnMainThread(() =>
             {
                 var index = Sections.IndexOf(section);
@@ -287,10 +331,6 @@ namespace IMP.ViewModels
         {
             return CalculateWaterUsageLiters(wateringType, elapsedTimeInSeconds) / 1000; // Zamiana litrów na m³
         }
-
-
-
-
 
 
     }

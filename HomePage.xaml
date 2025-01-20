@@ -7,9 +7,7 @@
         <!-- Definicje wierszy i kolumn -->
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
-            <!-- Wiersz dla kafelka Status -->
             <RowDefinition Height="Auto" />
-            <!-- Wiersz dla kafelków Sekcje i Ustawienia -->
         </Grid.RowDefinitions>
 
         <Grid.ColumnDefinitions>
@@ -17,9 +15,9 @@
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!-- Ramka Status -->
-        <Frame Grid.Row="0" Grid.ColumnSpan="2" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
-               WidthRequest="450" HeightRequest="200" HorizontalOptions="Center">
+     
+        <Frame Grid.Row="0" Grid.Column="0" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
+               WidthRequest="220" HeightRequest="200" HorizontalOptions="Center">
             <Label Text="Status" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding NavigateToStatusCommand}" />
@@ -27,7 +25,7 @@
         </Frame>
 
         <!-- Ramka Sekcje -->
-        <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
+        <Frame Grid.Row="0" Grid.Column="1" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
                WidthRequest="220" HeightRequest="200" HorizontalOptions="Center">
             <Label Text="Sekcje" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
             <Frame.GestureRecognizers>
@@ -36,11 +34,20 @@
         </Frame>
 
         <!-- Ramka Ustawienia -->
-        <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
+        <Frame Grid.Row="1" Grid.Column="0" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
                WidthRequest="220" HeightRequest="200" HorizontalOptions="Center">
             <Label Text="Ustawienia" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
             <Frame.GestureRecognizers>
                 <TapGestureRecognizer Command="{Binding NavigateToSettingsCommand}" />
+            </Frame.GestureRecognizers>
+        </Frame>
+
+        <!-- Ramka Historia -->
+        <Frame Grid.Row="1" Grid.Column="1" BackgroundColor="WhiteSmoke" Opacity="0.8" CornerRadius="25" Padding="20" HasShadow="False" BorderColor="Transparent"
+               WidthRequest="220" HeightRequest="200" HorizontalOptions="Center">
+            <Label Text="Historia" FontSize="30" FontAttributes="Bold" HorizontalOptions="Center" VerticalOptions="Center" TextColor="Black" />
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Command="{Binding NavigateToHistoryCommand}" />
             </Frame.GestureRecognizers>
         </Frame>
     </Grid>

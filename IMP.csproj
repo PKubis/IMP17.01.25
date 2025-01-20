@@ -74,6 +74,9 @@
 		<MauiAssets Include="Resources\Raw\impdb-557fa-firebase-adminsdk-7gw7l-a25e9f8bac.json" />
 	</ItemGroup>
 	<ItemGroup>
+		<MauiXaml Update="HistoryPage.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</MauiXaml>
 		<MauiXaml Update="HomePage.xaml">
 			<Generator>MSBuild:Compile</Generator>
 		</MauiXaml>

@@ -10,46 +10,43 @@ namespace IMP.ViewModels
     public class HomeViewModel : BindableObject
     {
         private readonly INavigation _navigation;
-        private readonly string _userId; // Zmiana z userEmail na userId
+        private readonly string _userId;
 
         // Komenda do nawigacji do sekcji
         public ICommand NavigateToSectionsCommand { get; }
-
-        // Komenda do nawigacji do ustawień
         public ICommand NavigateToSettingsCommand { get; }
-        // Komenda do nawigacji do status
         public ICommand NavigateToStatusCommand { get; }
+        public ICommand NavigateToHistoryCommand { get; } // Komenda do nawigacji do historii
 
         public HomeViewModel(INavigation navigation, string userId)
         {
             _navigation = navigation;
-            _userId = userId; // Przypisujemy userId
+            _userId = userId;
 
-            // Inicjalizacja komendy dla sekcji
             NavigateToSectionsCommand = new Command(async () => await NavigateToSections());
-
-            // Inicjalizacja komendy dla ustawień
             NavigateToSettingsCommand = new Command(async () => await NavigateToSettings());
-
-            // Inicjalizacja komendy dla ustawień
             NavigateToStatusCommand = new Command(async () => await NavigateToStatus());
+            NavigateToHistoryCommand = new Command(async () => await navigation.PushAsync(new HistoryPage(userId)));
         }
 
         private async Task NavigateToSections()
         {
-            // Przechodzi do strony sekcji
-            await _navigation.PushAsync(new SectionsPage(_userId)); // Przekazujemy userId do SectionsPage
+            await _navigation.PushAsync(new SectionsPage(_userId));
         }
 
         private async Task NavigateToSettings()
         {
-            // Przechodzi do strony ustawień
-            await _navigation.PushAsync(new SettingsPage(_userId)); // Przekazujemy userId do SettingsPage
+            await _navigation.PushAsync(new SettingsPage(_userId));
         }
+
         private async Task NavigateToStatus()
         {
-            await _navigation.PushAsync(new StatusPage(_userId)); // Przekazujemy userId do StatusPage
+            await _navigation.PushAsync(new StatusPage(_userId));
+        }
+
+        private async Task NavigateToHistory()
+        {
+            await _navigation.PushAsync(new HistoryPage(_userId)); // Przekierowanie na HistoryPage
         }
     }
-    
 }

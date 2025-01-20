@@ -97,9 +97,11 @@ namespace IMP
 
         private async void StopTimer(string sectionId)
         {
+            // Znajdź sekcję
             var section = Sections.FirstOrDefault(sec => sec.Id == sectionId);
             if (section == null) return;
 
+            // Zatrzymaj i usuń timer
             if (_timers.TryGetValue(sectionId, out var timer))
             {
                 timer.Stop();
@@ -107,21 +109,40 @@ namespace IMP
                 _timers.Remove(sectionId);
             }
 
-            // Zatrzymanie sterowania LED w Firebase
+            // Obliczanie zużycia wody
+            double waterUsageLiters = CalculateWaterUsageLiters(section.WateringType, section.ElapsedTime);
+            double waterUsageCubicMeters = waterUsageLiters / 1000;
+
+            // Dodaj wpis do historii
+            var entry = new ManualHistoryEntry
+            {
+                SectionName = section.Name,
+                Date = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"),
+                Duration = section.ElapsedTime,
+                WaterUsageLiters = waterUsageLiters, // Zużycie w litrach
+                WaterUsageCubicMeters = waterUsageCubicMeters // Zużycie w m³
+            };
+
+            await _databaseService.AddManualHistoryAsync(_userId, entry);
+
+            // Zaktualizuj status sekcji w Firebase
             await _databaseService.UpdateSectionStatusAsync(_userId, section.Id, "stop", section.WateringType);
 
+            // Resetowanie danych sekcji
             section.ElapsedTime = 0;
             section.CurrentWaterUsage = 0;
             section.CurrentWaterUsageCubicMeters = 0;
 
+            // Zaktualizuj sekcję na interfejsie użytkownika
             Device.BeginInvokeOnMainThread(() =>
             {
                 var updatedSection = Sections.First(sec => sec.Id == sectionId);
                 Sections[Sections.IndexOf(updatedSection)] = section;
             });
 
-            // Zapis zresetowanego czasu do Firebase
-            await _databaseService.UpdateElapsedTimeAsync(_userId, section.Id, section.ElapsedTime);
+            // Aktualizuj dane w Firebase
+            await _databaseService.UpdateElapsedTimeAsync(_userId, section.Id, 0);
         }
+
     }
 }

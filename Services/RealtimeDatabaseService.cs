@@ -189,17 +189,91 @@ namespace IMP.Services
         }
         public async Task UpdateTotalWaterUsageAsync(string userId, string sectionId, double totalWaterUsage)
         {
-            var url = $"{_databaseUrl}users/{userId}/sections/{sectionId}/TotalWaterUsageLiters.json";
-            var json = JsonSerializer.Serialize(totalWaterUsage);
-            var content = new StringContent(json, Encoding.UTF8, "application/json");
-            var response = await _httpClient.PutAsync(url, content);
-
-            if (!response.IsSuccessStatusCode)
+            try
             {
-                throw new Exception($"Failed to update TotalWaterUsage: {response.StatusCode}");
+                var url = $"{_databaseUrl}users/{userId}/sections/{sectionId}/TotalWaterUsageLiters.json";
+                var json = JsonSerializer.Serialize(totalWaterUsage);
+                var content = new StringContent(json, Encoding.UTF8, "application/json");
+                var response = await _httpClient.PutAsync(url, content);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    throw new Exception($"Failed to update TotalWaterUsage: {response.StatusCode}");
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error updating TotalWaterUsage: {ex.Message}");
+                throw;
             }
         }
 
+        public async Task AddManualHistoryAsync(string userId, ManualHistoryEntry entry)
+        {
+            var url = $"{_databaseUrl}users/{userId}/manualHistory.json";
+            var json = JsonSerializer.Serialize(entry);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(url, content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Failed to add manual history: {response.StatusCode}");
+            }
+        }
+
+        
+        public async Task AddScheduledHistoryAsync(string userId, ScheduledHistoryEntry entry)
+        {
+            var url = $"{_databaseUrl}users/{userId}/scheduledHistory.json";
+            var json = JsonSerializer.Serialize(entry);
+            var content = new StringContent(json, Encoding.UTF8, "application/json");
+            await _httpClient.PostAsync(url, content);
+        }
+
+
+        public async Task<List<ScheduledHistoryEntry>> GetScheduledHistoryAsync(string userId)
+        {
+            try
+            {
+                var url = $"{_databaseUrl}users/{userId}/scheduledHistory.json";
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode) return new List<ScheduledHistoryEntry>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                return string.IsNullOrWhiteSpace(json) || json == "null"
+                    ? new List<ScheduledHistoryEntry>()
+                    : JsonSerializer.Deserialize<Dictionary<string, ScheduledHistoryEntry>>(json)?.Values.ToList() ?? new List<ScheduledHistoryEntry>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching scheduled history: {ex.Message}");
+                return new List<ScheduledHistoryEntry>();
+            }
+        }
+
+
+
+        public async Task<List<ManualHistoryEntry>> GetManualHistoryAsync(string userId)
+        {
+            try
+            {
+                var url = $"{_databaseUrl}users/{userId}/manualHistory.json";
+                var response = await _httpClient.GetAsync(url);
+
+                if (!response.IsSuccessStatusCode) return new List<ManualHistoryEntry>();
+
+                var json = await response.Content.ReadAsStringAsync();
+                return string.IsNullOrWhiteSpace(json) || json == "null"
+                    ? new List<ManualHistoryEntry>()
+                    : JsonSerializer.Deserialize<Dictionary<string, ManualHistoryEntry>>(json)?.Values.ToList() ?? new List<ManualHistoryEntry>();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error fetching manual history: {ex.Message}");
+                return new List<ManualHistoryEntry>();
+            }
+        }
 
 
     }
