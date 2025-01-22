@@ -1,0 +1,33 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IMP.StatusPage"
+             Title="Status">
+    <StackLayout Padding="20" Spacing="15">
+        <!-- Nagłówek -->
+        <Label Text="Pogoda" FontSize="24" FontAttributes="Bold" HorizontalOptions="Center" />
+
+        <!-- Pole do wprowadzania miasta -->
+        <Entry Placeholder="Wprowadź nazwę miasta"
+               Text="{Binding CityName}"
+               FontSize="18"
+               HorizontalOptions="FillAndExpand" />
+
+        <!-- Przycisk do odświeżenia danych -->
+        <Button Text="Pokaż pogodę"
+                Command="{Binding RefreshWeatherCommand}"
+                FontSize="18"
+                HorizontalOptions="Center" />
+
+        <!-- Ikona pogodowa -->
+        <Image Source="{Binding WeatherIconUrl}" 
+               HeightRequest="100" 
+               WidthRequest="100" 
+               HorizontalOptions="Center" />
+
+        <!-- Dane podstawowe -->
+        <Label Text="{Binding WeatherInfo}" FontSize="18" TextColor="Gray" HorizontalOptions="Center" />
+
+        <!-- Szczegółowe dane -->
+        <Label Text="{Binding DetailedWeatherInfo}" FontSize="16" TextColor="Gray" HorizontalOptions="Center" />
+    </StackLayout>
+</ContentPage>

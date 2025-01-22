@@ -1,0 +1,51 @@
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="IMP.HistoryPage"
+             x:Name="Page"
+             BackgroundImageSource="tlo1.jpg"
+             Title="Historia Nawadniania">
+    <ScrollView>
+        <StackLayout Padding="10">
+            <Label Text="Historia Nawadniania"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center" />
+
+            <!-- Kolekcja Nawadniania -->
+            <CollectionView ItemsSource="{Binding ScheduledHistory}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding Date}" FontSize="14" />
+                            <Label Text="{Binding SectionName}" FontSize="16" />
+                            <Label Text="{Binding Duration, StringFormat='Czas trwania: {0} sek'}" FontSize="14" />
+                            <Label Text="{Binding WaterUsageLiters, StringFormat='Zużycie: {0:F2} L'}" FontSize="14" />
+                            <Label Text="{Binding WaterUsageCubicMeters, StringFormat='Zużycie: {0:F3} m³'}" FontSize="14" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+            <Label Text="Historia Manualna"
+                   FontSize="20"
+                   FontAttributes="Bold"
+                   HorizontalOptions="Center"
+                   Margin="20,10,0,0" />
+
+            <!-- Kolekcja Manualna -->
+            <CollectionView ItemsSource="{Binding ManualHistory}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout Padding="10">
+                            <Label Text="{Binding Date}" FontSize="14" />
+                            <Label Text="{Binding SectionName}" FontSize="16" />
+                            <Label Text="{Binding Duration, StringFormat='Czas trwania: {0} sek'}" FontSize="14" />
+                            <Label Text="{Binding WaterUsageLiters, StringFormat='Zużycie: {0:F2} L'}" FontSize="14" />
+                            <Label Text="{Binding WaterUsageCubicMeters, StringFormat='Zużycie: {0:F3} m³'}" FontSize="14" />
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>

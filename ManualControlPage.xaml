@@ -1,0 +1,48 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:local="clr-namespace:IMP"
+             x:Class="IMP.ManualControlPage"
+             BackgroundImageSource="tlo1.jpg"
+             Title="Ręczne sterowanie sekcjami">
+    <ScrollView>
+        <StackLayout Padding="20" Spacing="20">
+            <Frame BackgroundColor="WhiteSmoke" Padding="20" CornerRadius="25" Opacity="0.8" HorizontalOptions="Center">
+                <Label Text="Twoje sekcje" 
+                       FontSize="24" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center" 
+                       VerticalOptions="Center" 
+                       TextColor="Black" />
+            </Frame>
+
+            <StackLayout BindableLayout.ItemsSource="{Binding Sections}" Spacing="15">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate>
+                        <Frame BackgroundColor="#B3FFFFFF" Padding="15" CornerRadius="25" Opacity="0.8" HasShadow="True">
+                            <StackLayout>
+                                <Label Text="{Binding Name}" FontSize="20" FontAttributes="Bold" TextColor="Black" HorizontalOptions="Center" />
+                                <Label Text="{Binding ElapsedTime, StringFormat='Czas: {0} sek'}" FontSize="16" TextColor="Gray" HorizontalOptions="Center" />
+                                <!-- Bieżące zużycie w litrach -->
+                                <Label Text="{Binding CurrentWaterUsage, StringFormat='Zużycie: {0:F2} L'}"
+           FontSize="12"
+           TextColor="Black" />
+                                <!-- Bieżące zużycie w m3 -->
+                                <Label Text="{Binding CurrentWaterUsageCubicMeters, StringFormat='{0:F3} m³'}"
+           FontSize="12"
+           TextColor="Black" />
+                                <StackLayout Orientation="Horizontal" Spacing="10" HorizontalOptions="Center">
+                                    <Button Text="Start" WidthRequest="80" HeightRequest="40"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:ManualControlPage}}, Path=StartCommand}" 
+                                            CommandParameter="{Binding Id}" />
+                                    <Button Text="Stop" WidthRequest="80" HeightRequest="40"
+                                            Command="{Binding Source={RelativeSource AncestorType={x:Type local:ManualControlPage}}, Path=StopCommand}" 
+                                            CommandParameter="{Binding Id}" />
+                                </StackLayout>
+                            </StackLayout>
+                        </Frame>
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
+            </StackLayout>
+        </StackLayout>
+    </ScrollView>
+</ContentPage>
